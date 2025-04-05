@@ -29,7 +29,7 @@ def brewery_api():
 
     while True:
         url = f"https://api.openbrewerydb.org/v1/breweries?page={page}&per_page={per_page}"
-        logger.info(f"🔄 Requisitando página {page}...")
+        logger.info(f"Requisitando página {page}...")
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
@@ -46,7 +46,7 @@ def brewery_api():
     endpoint = creds["endpoint"]
     access_key = creds["access_key"]
     secret_key = creds["secret_key"]
-    bucket = creds["bucket"]
+    bucket_bronze = creds["bucket_bronze"]
     prefix = creds["prefix"]
 
     # Gera nome do arquivo baseado no timestamp
@@ -62,13 +62,13 @@ def brewery_api():
 
     # Salva o JSON no bucket
     s3.put_object(
-        Bucket=bucket,
+        Bucket=bucket_bronze,
         Key=filename,
         Body=json.dumps(all_data),
         ContentType="application/json"
     )
 
-    logger.info(f"Arquivo salvo em: s3://{bucket}/{filename}")
+    logger.info(f"Arquivo salvo em: s3://{bucket_bronze}/{filename}")
     logger.info(f"Total de registros salvos: {len(all_data)}")
 
 # Execução direta (ou via Airflow)

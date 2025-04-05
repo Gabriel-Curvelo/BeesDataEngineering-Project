@@ -4,9 +4,10 @@ from datetime import datetime, timedelta
 import sys
 import os
 
-# Permitir que o Airflow importe o script
+# Permitir que o Airflow importe os scripts
 sys.path.append("/usr/local/airflow/include/scripts") 
 from brewery_api_ingestion import brewery_api
+from silverlayer_output import main
 
 default_args = {
     "owner": "airflow",
@@ -16,7 +17,7 @@ default_args = {
 }
 
 with DAG(
-    "brewery_to_bronze",
+    "brewery",
     default_args=default_args,
     description="Coleta dados da API OpenBreweryDB e salva no MinIO",
     schedule_interval="@daily",
@@ -29,4 +30,10 @@ with DAG(
         python_callable=brewery_api,
     )
 
-    fetch_task
+    transform_task = PythonOperator(
+        task_id="silver_layer",
+        python_callable=main,
+    )
+
+    # Definir ordem de execução: bronze → silver
+    fetch_task >> transform_task
