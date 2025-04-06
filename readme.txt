@@ -21,6 +21,10 @@
          Agora todos os serviços estaram funcionando! 
 
 
+         docker network connect airflow_8983c3_airflow trino
+         astro dev restart      
+
+
 
                       
 

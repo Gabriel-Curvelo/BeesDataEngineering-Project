@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 
 services:
   # MinIO - Data Lake
@@ -15,60 +15,15 @@ services:
       - minio_data:/data
     command: server /data --console-address ":9001"
 
-  # Banco de dados para o Metastore
-  metastore-db:
-    image: postgres:15
-    container_name: metastore-db
-    environment:
-      POSTGRES_DB: metastore
-      POSTGRES_USER: datalake
-      POSTGRES_PASSWORD: datalake
-    ports:
-      - "5433:5432"
+  # Python 3.11 Slim Container
+  python:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: python-slim
     volumes:
-      - metastore_pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "datalake"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # Hive Metastore standalone
-  hive-metastore:
-    image: naushadh/hive-metastore
-    container_name: hive-metastore
-    ports:
-      - "9083:9083"
-    environment:
-      DATABASE_HOST: metastore-db
-      DATABASE_PORT: 5432
-      DATABASE_DB: metastore
-      DATABASE_USER: datalake
-      DATABASE_PASSWORD: datalake
-      METASTORE_PORT: 9083
-      S3_BUCKET: goldlayer
-      S3_PREFIX: warehouse
-      S3_ENDPOINT_URL: http://minio:9000 
-      AWS_ACCESS_KEY_ID: datalake
-      AWS_SECRET_ACCESS_KEY: datalake
-
-    depends_on:
-      metastore-db:
-        condition: service_healthy
-
-  # Trino para consultas SQL
-  trino:
-    image: trinodb/trino:latest
-    container_name: trino
-    ports:
-      - "8081:8080"
-    volumes:
-      - ./trino/etc:/etc/trino
-      - ./trino/data:/data
-      - ./trino/etc/core-site.xml:/etc/trino/core-site.xml
-    depends_on:
-      - hive-metastore
+      - ./scripts:/app
+    command: tail -f /dev/null
 
 volumes:
   minio_data:
-  metastore_pgdata:

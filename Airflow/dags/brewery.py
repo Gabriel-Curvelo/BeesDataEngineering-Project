@@ -6,8 +6,10 @@ import os
 
 # Permitir que o Airflow importe os scripts
 sys.path.append("/usr/local/airflow/include/scripts") 
+
 from brewery_api_ingestion import brewery_api
-from silverlayer_output import main
+from silverlayer_output import main as silver_main
+from goldlayer_output import main as gold_main
 
 default_args = {
     "owner": "airflow",
@@ -30,10 +32,15 @@ with DAG(
         python_callable=brewery_api,
     )
 
-    transform_task = PythonOperator(
+    transform_silver_task = PythonOperator(
         task_id="silver_layer",
-        python_callable=main,
+        python_callable=silver_main,
     )
 
-    # Definir ordem de execução: bronze → silver
-    fetch_task >> transform_task
+    transform_gold_task = PythonOperator(
+        task_id="gold_layer",
+        python_callable=gold_main,
+    )
+
+    # Definir ordem de execução: bronze → silver → gold
+    fetch_task >> transform_silver_task >> transform_gold_task
