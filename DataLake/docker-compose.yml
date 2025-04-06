@@ -15,15 +15,5 @@ services:
       - minio_data:/data
     command: server /data --console-address ":9001"
 
-  # Python 3.11 Slim Container
-  python:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: python-slim
-    volumes:
-      - ./scripts:/app
-    command: tail -f /dev/null
-
 volumes:
   minio_data:
