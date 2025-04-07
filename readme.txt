@@ -57,7 +57,7 @@ Criptografia de arquivos de configuração
    > O Astro é uma solução em nuvem que ajuda você a gastar menos tempo gerenciando o Apache Airflow®, com recursos que permitem criar, executar e observar dados em um só lugar.
 
 3. **Clone o repositório GitHub** no editor de sua preferência:
-   [https://github.com/Gabriel-Curvelo/BeesDataEngineering-Project](https://github.com/Gabriel-Curvelo/BeesDataEngineering-Project)
+   [https://github.com/Gabriel-Curvelo/BeesDataEngineering-Project]
 
 4. **No terminal, vá até a pasta `Airflow` e execute:**
    ```
@@ -105,9 +105,6 @@ Você pode:
 - Abrir o DBeaver e criar uma conexão direta com DuckDB
 - Utilizar o caminho copiado como path do banco de dados DuckDB
 - Visualizar os dados e gerar consultas SQL como desejar
-
-Os dados serão mostrados assim:
-
 
 **Alternativamente**, é possível configurar o acesso S3 diretamente no DuckDB (sem baixar o arquivo), assim como é feito com o boto3, para acessar os dados diretamente da camada Gold no MinIO.
 
