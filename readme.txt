@@ -47,7 +47,7 @@ Criptografia de arquivos de configuração
 1. **Pré-requisitos**:
    - Instale o [Docker](https://www.docker.com)
    - Instale o Python 3.9 ou superior
-   - Instale o DBeaver ou outra ferramenta compatível com DuckDB: [https://dbeaver.io](https://dbeaver.io)
+   - Instale o DBeaver ou outra ferramenta compatível com DuckDB: [https://dbeaver.io]
 
 2. **Instale o Astro no PowerShell (Windows)** com o comando:
    ```
