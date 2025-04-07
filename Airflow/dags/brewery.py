@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import sys
 import os
 
-# Permitir que o Airflow importe os scripts
+# Path to Airflow import scripts
 sys.path.append("/usr/local/airflow/include/scripts") 
 
 from brewery_api_ingestion import brewery_api
@@ -42,5 +42,5 @@ with DAG(
         python_callable=gold_main,
     )
 
-    # Definir ordem de execução: bronze → silver → gold
+    # Define execution order: bronze → silver → gold
     fetch_task >> transform_silver_task >> transform_gold_task

@@ -1,3 +1,6 @@
+
+
+
 1. Pré requisitos: Instale o docker link: https://www.docker.com
                    Instale Python 3.9 ou superior
                    Dbeaver ou outra ferramente compatível com Duckdb: https://dbeaver.io
@@ -28,7 +31,6 @@ para visualização dos dados e gerar consultas SQl como preferir.
 E possível também configurar o acesso S3 dentro do DuckDB, assim como é feito em um cliente como boto3,
 para vizualizar os dados do Dbeaver diretamente da camada gold, no MinIO.
 
-A stack completa é Docker, Airflow, MinIO, Duckdb e Dbeaver
 
 Importante:
 Os scripts com os ETLs, estão no caminho: \BeesDataEngineering-Project\Airflow\include\scripts

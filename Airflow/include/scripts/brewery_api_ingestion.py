@@ -1,6 +1,5 @@
-
-# Esse script tem como objetivo persistir os dados brutos da api https://www.openbrewerydb.org, 
-# na camada bronze do nosso modelo de data lake. Os arquivos gerados são salvos em formato json.
+# This script aims to persist raw data from the https://www.openbrewerydb.org API
+# into the bronze layer of our data lake model. The generated files are saved in JSON format.
 
 import os
 import json
@@ -9,19 +8,19 @@ import boto3
 import logging
 from datetime import datetime
 
-# Configuração do logging 
+# Logging configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Caminho para o arquivo de credenciais
+# Path to the credentials file
 CREDENTIALS_PATH = os.getenv("MINIO_KEYS_FILE", "/usr/local/airflow/include/keys/minio_credentials.json")
 
-# Carrega as chaves
+# Load keys
 def load_credentials(path=CREDENTIALS_PATH):
     with open(path, "r") as f:
         return json.load(f)
 
-# Leitura da API com paginação
+# Paginated API request
 def brewery_api():
     all_data = []
     page = 1
@@ -29,19 +28,19 @@ def brewery_api():
 
     while True:
         url = f"https://api.openbrewerydb.org/v1/breweries?page={page}&per_page={per_page}"
-        logger.info(f"Requisitando página {page}...")
+        logger.info(f"Requesting page {page}...")
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
 
         if not data:
-            logger.info("Nenhum dado retornado. Fim da paginação.")
+            logger.info("No data returned. End of pagination.")
             break
 
         all_data.extend(data)
         page += 1
 
-    # Carrega credenciais do MinIO
+    # Load MinIO credentials
     creds = load_credentials()
     endpoint = creds["endpoint"]
     access_key = creds["access_key"]
@@ -49,10 +48,10 @@ def brewery_api():
     bucket_bronze = creds["bucket_bronze"]
     prefix = creds["prefix"]
 
-    # Gera nome do arquivo baseado no timestamp
+    # Generate file name based on timestamp
     filename = f"{prefix}brewery_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
 
-    # Cria cliente MinIO via boto3
+    # Create MinIO client via boto3
     s3 = boto3.client(
         "s3",
         endpoint_url=endpoint,
@@ -60,7 +59,7 @@ def brewery_api():
         aws_secret_access_key=secret_key
     )
 
-    # Salva o JSON no bucket
+    # Save JSON to the bucket
     s3.put_object(
         Bucket=bucket_bronze,
         Key=filename,
@@ -68,10 +67,9 @@ def brewery_api():
         ContentType="application/json"
     )
 
-    logger.info(f"Arquivo salvo em: s3://{bucket_bronze}/{filename}")
-    logger.info(f"Total de registros salvos: {len(all_data)}")
+    logger.info(f"File saved to: s3://{bucket_bronze}/{filename}")
+    logger.info(f"Total records saved: {len(all_data)}")
 
-# Execução direta (ou via Airflow)
+# Direct execution (or via Airflow)
 if __name__ == "__main__":
     brewery_api()
-
