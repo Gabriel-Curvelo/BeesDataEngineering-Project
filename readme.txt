@@ -73,7 +73,7 @@ Criptografia de arquivos de configuração
    > ⚠️ Credenciais expostas propositalmente para ambiente de desenvolvimento local. Essas senhas são fornecidas pela própria documentação do Astro.
 
 6. **Agora vá até a pasta `DataLake` e execute:**
-   ```bash
+   ```
    docker-compose up -d
    ```
    Esse comando criará um container com o **MinIO**: plataforma de armazenamento de arquivos compatível com S3.
